@@ -2,6 +2,7 @@ import { AuthType } from './Auth';
 import { ChangeType } from './ChangeInfo';
 import { ChangeFilePromptOptions } from './ChangeFilePrompt';
 import { ChangelogOptions } from './ChangelogOptions';
+import { BumpDeps } from './BumpInfo';
 
 export type BeachballOptions = CliOptions & RepoOptions & PackageOptions;
 
@@ -18,7 +19,7 @@ export interface CliOptions {
   token: string;
   push: boolean;
   publish: boolean;
-  bumpDeps: boolean;
+  bumpDeps: BumpDeps;
   fetch: boolean;
   yes: boolean;
   new: boolean;
@@ -53,7 +54,7 @@ export interface RepoOptions {
   tag: string;
   push: boolean;
   publish: boolean;
-  bumpDeps: boolean;
+  bumpDeps: BumpDeps;
   fetch: boolean;
   access: 'public' | 'restricted';
   changehint: string;

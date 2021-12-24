@@ -1,5 +1,5 @@
 import { BumpInfo } from '../types/BumpInfo';
-import { setDependentsInBumpInfo } from './setDependentsInBumpInfo';
+import { selectDependentsToBump } from './selectDependentsToBump';
 import { updateRelatedChangeType } from './updateRelatedChangeType';
 import { bumpPackageInfoVersion } from './bumpPackageInfoVersion';
 import { BeachballOptions } from '../types/BeachballOptions';
@@ -23,9 +23,7 @@ export function bumpInPlace(bumpInfo: BumpInfo, options: BeachballOptions) {
   } = bumpInfo;
 
   // pass 1: figure out all the change types for all the packages taking into account the bumpDeps option and version groups
-  if (bumpDeps) {
-    setDependentsInBumpInfo(bumpInfo);
-  }
+  selectDependentsToBump(bumpInfo, bumpDeps);
 
   setGroupsInBumpInfo(bumpInfo, options);
 

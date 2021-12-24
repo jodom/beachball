@@ -36,3 +36,9 @@ export type BumpInfo = {
   /** Set of packages that are in scope for this bump */
   scopedPackages: Set<string>;
 };
+
+export type BumpDeps = boolean |
+{
+  /** Change type limit for which beachball should bump the dependencies */
+  bumpTo?: ChangeType
+};

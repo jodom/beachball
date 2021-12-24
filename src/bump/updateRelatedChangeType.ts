@@ -1,6 +1,7 @@
 import { MinChangeType, updateChangeInfoWithMaxType } from '../changefile/getPackageChangeTypes';
-import { BumpInfo } from '../types/BumpInfo';
+import { BumpDeps, BumpInfo } from '../types/BumpInfo';
 import { ChangeInfo, ChangeType } from '../types/ChangeInfo';
+import { shouldBumpDependentPackages } from './selectDependentsToBump';
 
 /**
  * This is the core of the bumpInfo dependency bumping logic
@@ -33,7 +34,7 @@ export function updateRelatedChangeType(
   changeFile: string,
   entryPointPackageName: string,
   bumpInfo: BumpInfo,
-  bumpDeps: boolean
+  bumpDeps: BumpDeps
 ) {
   /** [^1]: all the information needed from `bumpInfo` */
   const {
@@ -85,7 +86,7 @@ export function updateRelatedChangeType(
 
       const dependentPackages = dependents[subjectPackage];
 
-      if (bumpDeps && dependentPackages && dependentPackages.length > 0) {
+      if (dependentPackages && dependentPackages.length > 0 && shouldBumpDependentPackages(bumpDeps, changeType)) {
         for (const dependentPackage of dependentPackages) {
           queue.push({ subjectPackage: dependentPackage, changeType: dependentChangeType, baseChangeInfo });
         }
