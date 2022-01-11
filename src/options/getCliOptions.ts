@@ -50,6 +50,7 @@ function getCliOptionsUncached(argv: string[]): CliOptions {
     fromRef: args.since,
     keepChangeFiles: args['keep-change-files'],
     disallowDeletedChangeFiles: args['disallow-deleted-change-files'],
+    disallowStaleChangeFiles: args['disallow-stale-change-files'],
     forceVersions: args.force,
     configPath: args.config,
   } as CliOptions;

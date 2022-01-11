@@ -35,6 +35,7 @@ export interface CliOptions
   configPath?: string;
   dependentChangeType: ChangeType | null;
   disallowDeletedChangeFiles?: boolean;
+  disallowStaleChangeFiles?: boolean;
   forceVersions?: boolean;
   fromRef?: string;
   help?: boolean;

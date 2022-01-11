@@ -6,7 +6,7 @@ import { isChangeFileNeeded } from './isChangeFileNeeded';
 import { isValidGroupOptions } from './isValidGroupOptions';
 import { BeachballOptions } from '../types/BeachballOptions';
 import { isValidChangelogOptions } from './isValidChangelogOptions';
-import { readChangeFiles } from '../changefile/readChangeFiles';
+import { readChangeFiles, readStaleChangeFiles } from '../changefile/readChangeFiles';
 import { getPackageInfos } from '../monorepo/getPackageInfos';
 import { getPackageGroups } from '../monorepo/getPackageGroups';
 import { getDisallowedChangeTypes } from '../changefile/getDisallowedChangeTypes';
@@ -69,8 +69,30 @@ export function validate(options: BeachballOptions, validateOptions?: Partial<Va
     }
 
     if (options.disallowDeletedChangeFiles && areChangeFilesDeleted(options)) {
+      if (options.disallowStaleChangeFiles) {
+        console.warn(
+          'WARN: This CLI or config file option to disallowDeletedChangeFiles conflicts with the configuration to disallowStaleChangeFiles!'
+        );
+      }
+
       console.error('ERROR: Change files must not be deleted!');
       process.exit(1);
+    }
+
+    if (options.disallowStaleChangeFiles) {
+      if (options.disallowDeletedChangeFiles) {
+        console.warn(
+          'WARN: This CLI or config file option to disallowStaleChangeFiles conflicts with the configuration to disallowDeletedChangeFiles!'
+        );
+      }
+
+      const staleChangeFiles: string[] = readStaleChangeFiles(options);
+
+      if (staleChangeFiles.length > 0) {
+        console.error('ERROR: Stale change files should be removed! Consider deleting the following files:');
+        staleChangeFiles.forEach(file => console.log(file));
+        process.exit(1);
+      }
     }
   }
 
