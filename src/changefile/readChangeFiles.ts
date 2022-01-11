@@ -83,3 +83,36 @@ export function readChangeFiles(options: BeachballOptions, packageInfos: Package
 
   return changeSet;
 }
+
+/**
+ * Reads change file and returns a list of those that are outside the bounds of fromRef and HEAD
+ * These change files are considered stale and are usually not used for current bump and related operations
+ */
+export function readStaleChangeFiles(options: BeachballOptions): string[] {
+  const { path: cwd } = options;
+  const changePath = getChangePath(cwd);
+  const fromRef = options.fromRef;
+
+  let staleChangeFiles: string[] = [];
+
+  if (changePath && fs.existsSync(changePath)) {
+    const allChangeFiles = fs.readdirSync(changePath);
+
+    if (fromRef) {
+      const changeFilesSinceFromRef = getChangesBetweenRefs(
+        fromRef,
+        'HEAD',
+        [
+          '--diff-filter=d', // excluding deleted files from the diff.
+          '--relative', // results will include path relative to the cwd, i.e. only file names.
+        ],
+        '*.json',
+        changePath
+      );
+
+      staleChangeFiles = allChangeFiles.filter(fileName => !changeFilesSinceFromRef?.includes(fileName));
+    }
+  }
+
+  return staleChangeFiles;
+}
